@@ -34,30 +34,30 @@ export default function Dashboard() {
   const [drivName, setDrivName] = useState('');
   const isMobile = useMediaQuery('(max-width: 1200px)');
 
-  const token = localStorage.getItem('token');
-
   useEffect(() => {
-    const fetchModerators = async () => {
-      try {
-        const response = await axios.post(
-          `${config.API_BASE_URL}/api/show_moderators`,
-          null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const moderatorsData = response.data;
-        setModerators(moderatorsData);
-      } catch (error) {
-        console.error('Error fetching moderators:', error);
-      }
-    };
-
-    fetchModerators();
-  }, []);
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      const fetchModerators = async () => {
+        try {
+          const response = await axios.get(
+            `${config.API_BASE_URL}/api/show_moderators`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+  
+          const moderatorsData = response.data;
+          setModerators(moderatorsData);
+        } catch (error) {
+          console.error('Error fetching moderators:', error);
+        }
+      };
+  
+      fetchModerators();
+    }
+  }, []); 
 
   const router = useRouter();
 
@@ -70,24 +70,31 @@ export default function Dashboard() {
 
   const handleGetReports = async () => {
     try {
-      const response = await axios.post<Report[]>(
-        `${config.API_BASE_URL}/api/getByDateAdmin`,
-        {
-          date: date,
-          moderator_id: selectedModerator,
-          car_num: carNum,
-          driv_name: drivName,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('token');
+        const response = await axios.post<Report[]>(
+          `${config.API_BASE_URL}/api/getByDateAdmin`,
+          {
+            date: date,
+            moderator_id: selectedModerator,
+            car_num: carNum,
+            driv_name: drivName,
           },
-        }
-      );
-
-      setReports(response.data);
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        setReports(response.data);
+      } else {
+        // Handle cases where localStorage cannot be used (e.g., server-side rendering)
+        // You may choose to do nothing or display a message to the user.
+      }
     } catch (error) {
       console.error(error);
+      // Handle any error conditions here, such as displaying an error message to the user.
     }
   };
 

@@ -28,27 +28,40 @@ export default function Dashboard() {
   const isMobile = useMediaQuery('(max-width: 1200px)');
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false); // Состояние для видимости модального окна
 
-  const token = localStorage.getItem('token');
+  const [token, setToken] = useState<string | null>(null);
 
 
+
+  useEffect(() => {
+    // Check if running on the client side
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('token');
+      setToken(storedToken);
+    }
+  }, []);
 
   const handleExportReports = async () => {
     try {
-      const response = await axios.post(
-        `${config.API_BASE_URL}/api/ExportByDateRangeAdminFinal`,
-        {
-          start_date: startDate,
-          end_date: endDate,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      if (token) {
+        const response = await axios.post(
+          `${config.API_BASE_URL}/api/ExportByDateRangeAdminFinal`,
+          {
+            start_date: startDate,
+            end_date: endDate,
           },
-          responseType: 'blob',
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: 'blob',
+          }
+        );
 
-      saveAs(response.data, 'reports.xlsx');
+        saveAs(response.data, 'reports.xlsx');
+      } else {
+        // Handle cases where localStorage doesn't have a valid token
+        alert('Authentication error');
+      }
     } catch (error) {
       console.error(error);
     }
@@ -61,26 +74,31 @@ export default function Dashboard() {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await axios.delete(
-        `${config.API_BASE_URL}/api/delete_by_range_final`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: {
-            start_date: startDate,
-            end_date: endDate,
-          },
-        }
-      );
+      if (token) {
+        const response = await axios.delete(
+          `${config.API_BASE_URL}/api/delete_by_range_final`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            data: {
+              start_date: startDate,
+              end_date: endDate,
+            },
+          }
+        );
 
-      console.log(response.data); // Проверка успешного ответа с сервера
-      
-      // Закрываем модальное окно после удаления
-      setConfirmDeleteOpen(false);
-      alert('Данные успешно удалены!')
-      // Вы можете добавить обновление списка отчетов после удаления,
-      // если требуется обновить таблицу с отчетами на вашем фронтенде.
+        console.log(response.data); // Проверка успешного ответа с сервера
+
+        // Закрываем модальное окно после удаления
+        setConfirmDeleteOpen(false);
+        alert('Данные успешно удалены!');
+        // Вы можете добавить обновление списка отчетов после удаления,
+        // если требуется обновить таблицу с отчетами на вашем фронтенде.
+      } else {
+        // Handle cases where localStorage doesn't have a valid token
+        alert('Authentication error');
+      }
     } catch (error) {
       console.error(error);
     }
@@ -88,20 +106,25 @@ export default function Dashboard() {
 
   const handleGetReports = async () => {
     try {
-      const response = await axios.post<Report[]>(
-        `${config.API_BASE_URL}/api/getByDateRangeAdminFinal`,
-        {
-          start_date: startDate,
-          end_date: endDate,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      if (token) {
+        const response = await axios.post<Report[]>(
+          `${config.API_BASE_URL}/api/getByDateRangeAdminFinal`,
+          {
+            start_date: startDate,
+            end_date: endDate,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      setReports(response.data);
+        setReports(response.data);
+      } else {
+        // Handle cases where localStorage doesn't have a valid token
+        alert('Authentication error');
+      }
     } catch (error) {
       console.error(error);
     }

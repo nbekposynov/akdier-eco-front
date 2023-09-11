@@ -44,10 +44,10 @@ interface ProcessingData {
 
   
   const UpdateProcessing = () => {
-    const { id } = useParams()
-    const token = localStorage.getItem('token');
+      const { id } = useParams();
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
-    const [data, setData] = useState<ProcessingData>({
+  const [data, setData] = useState<ProcessingData>({
     car_num: '',
     driv_name: '',
     tbo_total: '',
@@ -78,56 +78,53 @@ interface ProcessingData {
     po_bur_shl: '',
     po_obr: '',
     po_him_reag: '', });
+  const [response, setResponse] = useState<string>('');
 
-    const router = useRouter();
+  useEffect(() => {
+    if (id && token) {
+      axios
+        .post(
+          `${config.API_BASE_URL}/api/show_processing/${id}`,
+          {}, // empty request body
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          const processingData = response.data;
+          setData(processingData);
+        })
+        .catch((error) => console.error(error));
+    }
+  }, [id, token]);
 
-    const handleButtonClick = () => {
-      // Действия при клике на кнопку
-      // Например, можно перенаправить на динамическую страницу
-      router.push(`/admin/edit/${id}`);
-    };
-    
-    const [response, setResponse] = useState<string>("");
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setData({ ...data, [event.target.name]: event.target.value });
+  };
 
-    useEffect(() => {
-      if (id) {
-        axios
-          .post(
-            `${config.API_BASE_URL}/api/show_processing/${id}`,
-            {}, // пустое тело запроса
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-          .then((response) => {
-            const processingData = response.data;
-            setData(processingData);
-          })
-          .catch((error) => console.error(error));
-      }
-    }, [id, token]);
-  
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setData({ ...data, [event.target.name]: event.target.value });
-    };
-  
-    const handleSubmit = async (event: React.FormEvent) => {
-      event.preventDefault();
-  
-      try {
-        const response = await axios.post(`${config.API_BASE_URL}/api/updateById/${id}`, data,        {headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    try {
+      if (id && token) {
+        const response = await axios.post(`${config.API_BASE_URL}/api/updateById/${id}`, data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setResponse(JSON.stringify(response.data));
         alert('Данные успешно обновлены');
-      } catch (error: any) {
-        setResponse(JSON.stringify(error.response.data));
-        alert(error);
+      } else {
+        // Handle cases where either id or token is missing (e.g., user not authenticated)
+        alert('Authentication error or missing ID');
       }
-    };
+    } catch (error: any) {
+      setResponse(JSON.stringify(error.response.data));
+      alert(error);
+    }
+  };
 
 
     return (

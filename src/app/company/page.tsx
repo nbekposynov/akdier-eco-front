@@ -20,35 +20,35 @@ export default function Dashboard() {
   }
 
 
-
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [reports, setReports] = useState<Report[]>([]);
   const [carNum, setCarNum] = useState('');
   const [drivName, setDrivName] = useState('');
   const isMobile = useMediaQuery('(max-width: 1200px)');
-  const token = localStorage.getItem('token');
-
 
   const handleExportReports = async () => {
     try {
-      const response = await axios.get( // Use axios.get instead of axios.post
-        `${config.API_BASE_URL}/api/exportByCompany`,
-        {
-          params: { // Use params to pass query parameters for GET requests
-            start_date: startDate,
-            end_date: endDate,
-            car_num: carNum,
-            driv_name: drivName,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          responseType: 'blob', // Keep responseType as blob for file download
-        }
-      );
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+          `${config.API_BASE_URL}/api/exportByCompany`,
+          {
+            params: {
+              start_date: startDate,
+              end_date: endDate,
+              car_num: carNum,
+              driv_name: drivName,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: 'blob',
+          }
+        );
 
-      saveAs(response.data, 'reports.xlsx');
+        saveAs(response.data, 'reports.xlsx');
+      }
     } catch (error) {
       console.error(error);
     }
@@ -56,22 +56,25 @@ export default function Dashboard() {
 
   const handleGetReports = async () => {
     try {
-      const response = await axios.get<Report[]>( // Use axios.get instead of axios.post
-        `${config.API_BASE_URL}/api/getByDateRangeCompany`,
-        {
-          params: { // Use params to pass query parameters for GET requests
-            start_date: startDate,
-            end_date: endDate,
-            car_num: carNum,
-            driv_name: drivName,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('token');
+        const response = await axios.get<Report[]>(
+          `${config.API_BASE_URL}/api/getByDateRangeCompany`,
+          {
+            params: {
+              start_date: startDate,
+              end_date: endDate,
+              car_num: carNum,
+              driv_name: drivName,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      setReports(response.data);
+        setReports(response.data);
+      }
     } catch (error) {
       console.error(error);
     }

@@ -5,6 +5,7 @@ import { Avatar, Button, CssBaseline, TextField, Box, Typography, Container } fr
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
+import config from '@/config';
 
 const defaultTheme = createTheme();
 
@@ -17,22 +18,24 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`http://127.0.0.1:8000/api/login`, { email, password });
-      const token = response.data.token;
-      localStorage.setItem('token', token);
-      const role = response.data.role;
-      localStorage.setItem('role', role);
+      if (typeof window !== 'undefined') {
+        const response = await axios.post(`${config.API_BASE_URL}/api/login`, { email, password });
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+        const role = response.data.role;
+        localStorage.setItem('role', role);
 
-      switch (role) {
-        case 'admin':
-          router.push('/admin');
-          break;
-        case 'moderator':
-          router.push('/moderator');
-          break;
-        case 'company':
-          router.push('/company');
-          break;
+        switch (role) {
+          case 'admin':
+            router.push('/admin');
+            break;
+          case 'moderator':
+            router.push('/moderator');
+            break;
+          case 'company':
+            router.push('/company');
+            break;
+        }
       }
     } catch (error) {
       console.error(error);

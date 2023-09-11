@@ -25,8 +25,7 @@ const RegisterCompanyForm = () => {
       [name]: value,
     }));
   };
-  const token = localStorage.getItem('token');
-
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null; // Проверка наличия window перед обращением к localStorage
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {

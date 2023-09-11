@@ -40,29 +40,31 @@ export default function Dashboard() {
   const isMobile = useMediaQuery('(max-width: 1200px)');
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false); // Состояние для видимости модального окна
 
-  const token = localStorage.getItem('token');
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
   useEffect(() => {
-    const fetchModerators = async () => {
-      try {
-        const response = await axios.get(
-          `${config.API_BASE_URL}/api/show_moderators`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-  
-        const moderatorsData = response.data;
-        setModerators(moderatorsData);
-      } catch (error) {
-        console.error('Error fetching moderators:', error);
-      }
-    };
-  
-    fetchModerators();
-  }, []);
+    if (typeof window !== 'undefined') {
+      const fetchModerators = async () => {
+        try {
+          const response = await axios.get(
+            `${config.API_BASE_URL}/api/show_moderators`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+    
+          const moderatorsData = response.data;
+          setModerators(moderatorsData);
+        } catch (error) {
+          console.error('Error fetching moderators:', error);
+        }
+      };
+    
+      fetchModerators();
+    }
+  }, [token]);
 
   const handleDeleteRecords = async () => {
     // Открываем модальное окно перед удалением
@@ -71,26 +73,28 @@ export default function Dashboard() {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await axios.delete(
-        `${config.API_BASE_URL}/api/delete_by_range`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: {
-            start_date: startDate,
-            end_date: endDate,
-          },
-        }
-      );
-
-      console.log(response.data); // Проверка успешного ответа с сервера
-      
-      // Закрываем модальное окно после удаления
-      setConfirmDeleteOpen(false);
-      alert('Данные успешно удалены!')
-      // Вы можете добавить обновление списка отчетов после удаления,
-      // если требуется обновить таблицу с отчетами на вашем фронтенде.
+      if (typeof window !== 'undefined') {
+        const response = await axios.delete(
+          `${config.API_BASE_URL}/api/delete_by_range`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            data: {
+              start_date: startDate,
+              end_date: endDate,
+            },
+          }
+        );
+  
+        console.log(response.data); // Проверка успешного ответа с сервера
+        
+        // Закрываем модальное окно после удаления
+        setConfirmDeleteOpen(false);
+        alert('Данные успешно удалены!');
+        // Вы можете добавить обновление списка отчетов после удаления,
+        // если требуется обновить таблицу с отчетами на вашем фронтенде.
+      }
     } catch (error) {
       console.error(error);
     }
@@ -98,24 +102,26 @@ export default function Dashboard() {
 
   const handleExportReports = async () => {
     try {
-      const response = await axios.get(
-        `${config.API_BASE_URL}/api/exportByAdmin`,
-        {
-          params: {
-            start_date: startDate,
-            end_date: endDate,
-            moderator_id: selectedModerator,
-            car_num: carNum,
-            driv_name: drivName,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          responseType: 'blob',
-        }
-      );
-  
-      saveAs(response.data, 'reports.xlsx');
+      if (typeof window !== 'undefined') {
+        const response = await axios.get(
+          `${config.API_BASE_URL}/api/exportByAdmin`,
+          {
+            params: {
+              start_date: startDate,
+              end_date: endDate,
+              moderator_id: selectedModerator,
+              car_num: carNum,
+              driv_name: drivName,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: 'blob',
+          }
+        );
+    
+        saveAs(response.data, 'reports.xlsx');
+      }
     } catch (error) {
       console.error(error);
     }
@@ -123,23 +129,25 @@ export default function Dashboard() {
 
   const handleGetReports = async () => {
     try {
-      const response = await axios.get<Report[]>(
-        `${config.API_BASE_URL}/api/getByDateRangeAdmin`,
-        {
-          params: {
-            start_date: startDate,
-            end_date: endDate,
-            moderator_id: selectedModerator,
-            car_num: carNum,
-            driv_name: drivName,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-  
-      setReports(response.data);
+      if (typeof window !== 'undefined') {
+        const response = await axios.get<Report[]>(
+          `${config.API_BASE_URL}/api/getByDateRangeAdmin`,
+          {
+            params: {
+              start_date: startDate,
+              end_date: endDate,
+              moderator_id: selectedModerator,
+              car_num: carNum,
+              driv_name: drivName,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+    
+        setReports(response.data);
+      }
     } catch (error) {
       console.error(error);
     }

@@ -1,25 +1,30 @@
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import Button from '@mui/material/Button';
 
 const LogoutButton = () => {
   const router = useRouter();
 
   const handleLogout = () => {
-    // Удаление токена из localStorage
-    localStorage.removeItem('token');
-    
-    // Перенаправление на страницу выхода
-    router.push('/');
+    // Check if the code is running in the browser environment
+    if (typeof window !== 'undefined') {
+      // Remove the token from localStorage
+      localStorage.removeItem('token');
+      
+      // Redirect to the '/' page
+      router.push('/');
+    }
   };
 
   useEffect(() => {
-    // Проверка наличия токена в localStorage
-    const token = localStorage.getItem('token');
-    
-    // Если токен отсутствует, перенаправление на страницу выхода
-    if (!token) {
-      router.push('/');
+    // Check for the presence of a token in localStorage
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      
+      // If no token is found, redirect to the '/' page
+      if (!token) {
+        router.push('/');
+      }
     }
   }, []);
 

@@ -9,27 +9,34 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Box } from '@mui/material';
 import Container from '@mui/material/Container';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import Button from '@mui/material/Button';
 
 import config from '@/config';
+
 interface Company {
-  id: number;  
+  id: number;
   name: string;
   email: string;
 }
-const token = localStorage.getItem('token');
 
 export default function BasicTable() {
   const [rows, setRows] = useState<Company[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
-    // Fetch companies data from the server
-    fetchCompanies();
+    // Check if running on the client side
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      // Fetch companies data from the server
+      fetchCompanies(token);
+    }
   }, []);
 
-  const fetchCompanies = async () => {
+  const fetchCompanies = async (token: string | null) => {
     try {
+      if (!token) return; // Return if token is not available
+
       const response = await fetch(`${config.API_BASE_URL}/api/show_moderators`, {
         method: 'GET',
         headers: {
@@ -37,14 +44,17 @@ export default function BasicTable() {
           Authorization: `Bearer ${token}`,
         },
       });
-      const data = await response.json();
-      setRows(data);
+
+      if (response.ok) {
+        const data = await response.json();
+        setRows(data);
+      } else {
+        console.error('Error fetching companies:', response.status);
+      }
     } catch (error) {
       console.error('Error fetching companies:', error);
     }
   };
-
-  const router = useRouter();
 
   const handleButtonClick = (id: number) => {
     // Действия при клике на кнопку
@@ -59,7 +69,7 @@ export default function BasicTable() {
         flexGrow: 1,
         height: '100vh',
         overflow: 'auto',
-        marginTop: '50px'
+        marginTop: '50px',
       }}
     >
       <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
@@ -71,10 +81,9 @@ export default function BasicTable() {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell align="center"> Наименование Филлиала</TableCell>
-                <TableCell align="center">Email </TableCell>
-                <TableCell align="center">Изменить </TableCell>
-
+                <TableCell align="center">Наименование Филлиала</TableCell>
+                <TableCell align="center">Email</TableCell>
+                <TableCell align="center">Изменить</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -83,16 +92,17 @@ export default function BasicTable() {
                   key={row.name}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-
                   <TableCell align="center">{row.name}</TableCell>
                   <TableCell align="center">{row.email}</TableCell>
-                  <TableCell align="center"><Button
-                    variant="contained"
-                    onClick={() => handleButtonClick(row.id)}
-                    sx={{ backgroundColor: 'green' }}>
-                    Select 
-                    </Button></TableCell>
-
+                  <TableCell align="center">
+                    <Button
+                      variant="contained"
+                      onClick={() => handleButtonClick(row.id)}
+                      sx={{ backgroundColor: 'green' }}
+                    >
+                      Select
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

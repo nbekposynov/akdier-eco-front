@@ -27,21 +27,30 @@ export default function BasicTable() {
   const [rows, setRows] = useState<Company[]>([]);
 
   useEffect(() => {
-    // Fetch companies data from the server
-    fetchCompanies();
+    // Check if running on the client side
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      // Fetch companies data from the server
+      fetchCompanies(token);
+    }
   }, []);
 
-  const fetchCompanies = async () => {
+  const fetchCompanies = async (token: string | null) => {
     try {
-      const response = await fetch(`${config.API_BASE_URL}/api/show_companies`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      setRows(data);
+      if (token) {
+        const response = await fetch(`${config.API_BASE_URL}/api/show_companies`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setRows(data);
+      } else {
+        // Handle cases where localStorage doesn't have a valid token
+        alert('Authentication error');
+      }
     } catch (error) {
       console.error('Error fetching companies:', error);
     }

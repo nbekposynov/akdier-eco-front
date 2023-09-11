@@ -14,28 +14,31 @@ interface ProcessingData {
 
 const UpdateProcessing = () => {
   const { id } = useParams();
-  const token = localStorage.getItem('token');
+  const [token, setToken] = useState<string | null>(null);
   const [data, setData] = useState<ProcessingData>({
     name_othod: '',
     value: '',
     type_operation: '',
   });
-  const router = useRouter();
 
-  const handleButtonClick = () => {
-    // Действия при клике на кнопку
-    // Например, можно перенаправить на динамическую страницу
-    router.push(`/admin/edit/${id}`);
-  };
 
   const [response, setResponse] = useState<string>('');
 
   useEffect(() => {
-    if (id) {
+    // Check if running on the client side
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('token');
+      setToken(storedToken);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Fetch processing data when the ID and token are available
+    if (id && token) {
       axios
         .post(
           `${config.API_BASE_URL}/api/getByIdFinal/${id}`,
-          {}, // пустое тело запроса
+          {}, // empty request body
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -58,17 +61,23 @@ const UpdateProcessing = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${config.API_BASE_URL}/api/updateByIdFinal/${id}`, // Use template literals to add the id to the URL
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(response.data); // Log the response data for debugging purposes
-      alert('Данные успешно обновлены');
+      // Check if ID and token are available before making the update request
+      if (id && token) {
+        const response = await axios.post(
+          `${config.API_BASE_URL}/api/updateByIdFinal/${id}`, // Use template literals to add the id to the URL
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data); // Log the response data for debugging purposes
+        alert('Данные успешно обновлены');
+      } else {
+        // Handle cases where either id or token is missing (e.g., user not authenticated)
+        alert('Authentication error or missing ID');
+      }
     } catch (error: any) {
       if (error.response) {
         // Server returned an error response

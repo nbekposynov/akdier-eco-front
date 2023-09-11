@@ -1,20 +1,23 @@
 import { useRouter } from 'next/navigation';
-import { useEffect, ReactNode  } from 'react';
+import { useEffect, ReactNode } from 'react';
 
 interface PrivateRouteProps {
-    children: ReactNode;
-  } 
+  children: ReactNode;
+}
+
+const PrivateCompanyRoute = ({ children }: PrivateRouteProps) => {
+  const router = useRouter();
   
-const PrivateModeratorRoute = ({ children }: PrivateRouteProps) => {
-    const router = useRouter();
-    const role = localStorage.getItem('role');
-  
-    useEffect(() => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const role = localStorage.getItem('role');
       if (!localStorage.getItem('token') || role !== 'moderator') {
         router.push('/');
       }
-    }, []);
-  
-    return <>{children}</>;
-  };
-  export default PrivateModeratorRoute
+    }
+  }, []);
+
+  return <>{children}</>;
+};
+
+export default PrivateCompanyRoute;

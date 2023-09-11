@@ -5,7 +5,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import React, { useState } from 'react';
 import axios from 'axios';
-import { DataGrid} from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { saveAs } from 'file-saver';
@@ -13,64 +13,60 @@ import config from '@/config';
 import { useMediaQuery } from '@mui/material';
 
 export default function Dashboard() {
-
-  interface ProcessingData {
-    driv_name: string;
-    car_num: string;
-  }
-
-
-
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [reports, setReports] = useState<Report[]>([]);
   const [carNum, setCarNum] = useState('');
   const [drivName, setDrivName] = useState('');
   const isMobile = useMediaQuery('(max-width: 1200px)');
-  const token = localStorage.getItem('token');
-
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null; // Проверка наличия window перед обращением к localStorage
 
   const handleExportReports = async () => {
     try {
       const response = await axios.get(
-        `${config.API_BASE_URL}/api/export_by_month`, {
-        params: {
-          start_date: startDate,
-          end_date: endDate,
-          car_num: carNum,
-          driv_name: drivName,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        responseType: 'blob',
-      });
-  
+        `${config.API_BASE_URL}/api/export_by_month`,
+        {
+          params: {
+            start_date: startDate,
+            end_date: endDate,
+            car_num: carNum,
+            driv_name: drivName,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          responseType: 'blob',
+        }
+      );
+
       saveAs(response.data, 'reports.xlsx');
     } catch (error) {
       console.error(error);
     }
   };
 
-const handleGetReports = async () => {
-  try {
-    const response = await axios.get<Report[]>(`${config.API_BASE_URL}/api/get_by_range`, {
-      params: {
-        start_date: startDate,
-        end_date: endDate,
-        car_num: carNum,
-        driv_name: drivName,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const handleGetReports = async () => {
+    try {
+      const response = await axios.get<Report[]>(
+        `${config.API_BASE_URL}/api/get_by_range`,
+        {
+          params: {
+            start_date: startDate,
+            end_date: endDate,
+            car_num: carNum,
+            driv_name: drivName,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    setReports(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-};
+      setReports(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   type Report = {
     company_name: string;
     tbo_total: number;

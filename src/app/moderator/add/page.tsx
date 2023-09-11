@@ -70,7 +70,7 @@ const CreateProcessing = () => {
     name: string;
     // Другие свойства компании, если они есть
   }
-  const token = localStorage.getItem('token');
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null; // Проверка наличия window перед обращением к localStorage
   const [companies, setCompanies] = useState<Company[]>([]);
 
   useEffect(() => {

@@ -20,24 +20,27 @@ interface Company {
 
 const CompanyProfile = () => {
   const [company, setCompany] = useState<Company | null>(null);
-  const token = localStorage.getItem('token');
-
+  
   useEffect(() => {
-    const fetchCompanyData = async () => {
-      try {
-        const response = await axios.get(`${config.API_BASE_URL}/api/getCompanyById`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setCompany(response.data);
-      } catch (error) {
-        console.error('Error fetching company data:', error);
-      }
-    };
-
-    fetchCompanyData();
-  }, [token]);
+    if (typeof window !== 'undefined') { // Проверка наличия window
+      const token = localStorage.getItem('token');
+      
+      const fetchCompanyData = async () => {
+        try {
+          const response = await axios.get(`${config.API_BASE_URL}/api/getCompanyById`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setCompany(response.data);
+        } catch (error) {
+          console.error('Error fetching company data:', error);
+        }
+      };
+  
+      fetchCompanyData();
+    }
+  }, []);
 
   if (!company) {
     return <div>Loading...</div>;

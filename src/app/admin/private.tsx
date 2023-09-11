@@ -1,20 +1,23 @@
 import { useRouter } from 'next/navigation';
-import { useEffect, ReactNode  } from 'react';
+import { useEffect, ReactNode } from 'react';
 
 interface PrivateRouteProps {
-    children: ReactNode;
-  } 
-  
+  children: ReactNode;
+}
+
 const PrivateAdminRoute = ({ children }: PrivateRouteProps) => {
-    const router = useRouter();
-    const role = localStorage.getItem('role');
+  const router = useRouter();
   
-    useEffect(() => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const role = localStorage.getItem('role');
       if (!localStorage.getItem('token') || role !== 'admin') {
         router.push('/');
       }
-    }, []);
-  
-    return <>{children}</>;
-  };
-  export default PrivateAdminRoute
+    }
+  }, []);
+
+  return <>{children}</>;
+};
+
+export default PrivateAdminRoute;

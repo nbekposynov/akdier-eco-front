@@ -30,72 +30,82 @@ interface CompanyData {
 
     });
 
-    const router = useRouter();
 
-    const handleButtonClick = () => {
-      // Действия при клике на кнопку
-      // Например, можно перенаправить на динамическую страницу
-      router.push(`/admin/edit/${id}`);
-    };
     
     const [response, setResponse] = useState<string>("");
 
-useEffect(() => {
-  if (id) {
-    const fetchData = async () => {
+    useEffect(() => {
+      // Check if running on the client side
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('token');
+  
+        if (id) {
+          const fetchData = async () => {
+            try {
+              const response = await fetch(
+                `${config.API_BASE_URL}/api/getByIdModerator/${id}`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({}), // Empty request body
+                }
+              );
+  
+              if (response.ok) {
+                const CompanyData = await response.json();
+                setData(CompanyData);
+              } else {
+                console.error('Error fetching data:', response.status);
+              }
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          };
+  
+          fetchData();
+        }
+      }
+    }, [id]);
+  
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setData({ ...data, [event.target.name]: event.target.value });
+    };
+  
+    const handleSubmit = async (event: React.FormEvent) => {
+      event.preventDefault();
+  
       try {
-        const response = await fetch(`${config.API_BASE_URL}/api/getByIdModerator/${id}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({}), // Empty request body
-        });
-
-        if (response.ok) {
-          const CompanyData = await response.json();
-          setData(CompanyData);
-        } else {
-          console.error('Error fetching data:', response.status);
+        // Check if running on the client side
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem('token');
+  
+          const response = await fetch(
+            `${config.API_BASE_URL}/api/updateByIdModerator/${id}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(data),
+            }
+          );
+  
+          if (response.ok) {
+            const responseData = await response.json();
+            setResponse(JSON.stringify(responseData));
+            alert('Данные успешно изменены');
+          } else {
+            console.error('Error updating company:', response.status);
+          }
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error updating company:', error);
       }
     };
-
-    fetchData();
-  }
-}, [id, token]);
-
-const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-  setData({ ...data, [event.target.name]: event.target.value });
-};
-
-const handleSubmit = async (event: React.FormEvent) => {
-  event.preventDefault();
-
-  try {
-    const response = await fetch(`${config.API_BASE_URL}/api/updateByIdModerator/${id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (response.ok) {
-      const responseData = await response.json();
-      setResponse(JSON.stringify(responseData));
-      alert('Данные Успешно изменены')
-    } else {
-      console.error('Error updating company:', response.status);
-    }
-  } catch (error) {
-    console.error('Error updating company:', error);
-  }
-};
 
 
     return (

@@ -2,12 +2,10 @@
 
 "use client"
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import config from '@/config';
 import { TextField } from '@mui/material';
 import Button from '@mui/material/Button';
-import { Router } from 'next/router';
 
 
 interface CompanyData {
@@ -22,7 +20,7 @@ interface CompanyData {
   
   const UpdateProcessing = () => {
     const { id } = useParams()
-    const token = localStorage.getItem('token');
+    const [token, setToken] = useState<string | null>(null);
 
     const [data, setData] = useState<CompanyData>({
     
@@ -34,73 +32,80 @@ interface CompanyData {
 
     });
 
-    const router = useRouter();
-
-    const handleButtonClick = () => {
-      // Действия при клике на кнопку
-      // Например, можно перенаправить на динамическую страницу
-      router.push(`/admin/edit/${id}`);
-    };
     
     const [response, setResponse] = useState<string>("");
 
-useEffect(() => {
-  if (id) {
-    const fetchData = async () => {
+    useEffect(() => {
+      // Check if running on the client side
+      if (typeof window !== 'undefined') {
+        const storedToken = localStorage.getItem('token');
+        setToken(storedToken);
+      }
+    }, []);
+  
+    useEffect(() => {
+      // Fetch processing data when the ID and token are available
+      if (id && token) {
+        const fetchData = async () => {
+          try {
+            const response = await fetch(`${config.API_BASE_URL}/api/getByIdCompany/${id}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({}), // Empty request body
+            });
+  
+            if (response.ok) {
+              const CompanyData = await response.json();
+              setData(CompanyData);
+            } else {
+              console.error('Error fetching data:', response.status);
+            }
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+  
+        fetchData();
+      }
+    }, [id, token]);
+  
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setData({ ...data, [event.target.name]: event.target.value });
+    };
+  
+    const handleSubmit = async (event: React.FormEvent) => {
+      event.preventDefault();
+  
       try {
-        const response = await fetch(`${config.API_BASE_URL}/api/getByIdCompany/${id}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({}), // Empty request body
-        });
-
-        if (response.ok) {
-          const CompanyData = await response.json();
-          setData(CompanyData);
+        // Check if ID and token are available before making the update request
+        if (id && token) {
+          const response = await fetch(`${config.API_BASE_URL}/api/updateByIdCompany/${id}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+          });
+  
+          if (response.ok) {
+            const responseData = await response.json();
+            setResponse(JSON.stringify(responseData));
+            alert('Данные Успешно изменены');
+          } else {
+            console.error('Error updating company:', response.status);
+          }
         } else {
-          console.error('Error fetching data:', response.status);
+          // Handle cases where either id or token is missing (e.g., user not authenticated)
+          alert('Authentication error or missing ID');
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error updating company:', error);
       }
     };
-
-    fetchData();
-  }
-}, [id, token]);
-
-const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-  setData({ ...data, [event.target.name]: event.target.value });
-};
-
-const handleSubmit = async (event: React.FormEvent) => {
-  event.preventDefault();
-
-  try {
-    const response = await fetch(`${config.API_BASE_URL}/api/updateByIdCompany/${id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (response.ok) {
-      const responseData = await response.json();
-      setResponse(JSON.stringify(responseData));
-      alert('Данные Успешно изменены')
-    } else {
-      console.error('Error updating company:', response.status);
-    }
-  } catch (error) {
-    console.error('Error updating company:', error);
-  }
-};
-
 
     return (
       <center>

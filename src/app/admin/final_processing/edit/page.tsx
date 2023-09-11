@@ -23,7 +23,6 @@ export default function Dashboard() {
   const [reports, setReports] = useState<Report[]>([]);
   const isMobile = useMediaQuery('(max-width: 1200px)');
 
-  const token = localStorage.getItem('token');
 
 
 
@@ -38,21 +37,28 @@ export default function Dashboard() {
 
   const handleGetReports = async () => {
     try {
-      const response = await axios.post<Report[]>(
-        `${config.API_BASE_URL}/api/getByDateAdminFinal`,
-        {
-          date: date
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('token');
+        const response = await axios.post<Report[]>(
+          `${config.API_BASE_URL}/api/getByDateAdminFinal`,
+          {
+            date: date,
           },
-        }
-      );
-
-      setReports(response.data);
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        setReports(response.data);
+      } else {
+        // Handle cases where localStorage cannot be used (e.g., server-side rendering)
+        // You may choose to do nothing or display a message to the user.
+      }
     } catch (error) {
       console.error(error);
+      // Handle any error conditions here, such as displaying an error message to the user.
     }
   };
 
