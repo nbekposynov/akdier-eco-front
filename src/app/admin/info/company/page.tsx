@@ -21,7 +21,6 @@ interface Company {
   email: string;
   password: string;
 }
-const token = localStorage.getItem('token');
 
 export default function BasicTable() {
   const [rows, setRows] = useState<Company[]>([]);
