@@ -47,12 +47,12 @@ const CreateProcessing = () => {
     po_bur_shl: '',
     po_obr: '',
     po_him_reag: '',
+    custom_factor_tpo_tara_pol: '',
     custom_factor_neftesh: '',
     custom_factor_zam_gr: '',
     custom_factor_bsh: '',
     custom_factor_obr: '',
     custom_factor_him_reag: '',
-    custom_factor_tpo_tara_pol: '',
     custom_factor_tpo_tara_met: '',
     custom_factor_tpo_akkum: '',
     custom_factor_tbo_vetoshfi: '',
@@ -368,11 +368,11 @@ const CreateProcessing = () => {
         onChange={handleChange}
         margin="normal"
         variant="outlined"
-          style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
       />              <TextField
       label="Коэффициент ТПО Шины"
-      name="tpo_tara_met"
+      name="custom_factor_tpo_shini"
       value={formData.custom_factor_tpo_shini}
       onChange={handleChange}
       margin="normal"
@@ -393,7 +393,7 @@ const CreateProcessing = () => {
       /> 
                   <TextField
         label="Коэффициент ТПО Ветош ФИ"
-        name="tpo_tara_met"
+        name="custom_factor_tbo_vetoshfi"
         value={formData.custom_factor_tbo_vetoshfi}
         onChange={handleChange}
         margin="normal"
@@ -425,7 +425,7 @@ const CreateProcessing = () => {
       /> 
             <TextField
         label="Коэффициент ТПО Аккум"
-        name="tpo_tara_met"
+        name="custom_factor_tpo_akkum"
         value={formData.custom_factor_tpo_akkum}
         onChange={handleChange}
         margin="normal"
@@ -446,7 +446,7 @@ const CreateProcessing = () => {
       /> 
       <TextField
         label="Коэффициент ТПО Тара Мет"
-        name="tpo_tara_met"
+        name="custom_factor_tpo_tara_met"
         value={formData.custom_factor_tpo_tara_met}
         onChange={handleChange}
         margin="normal"
@@ -468,7 +468,7 @@ const CreateProcessing = () => {
       /> 
       <TextField
         label="Коэффициент ТПО Тара Пол"
-        name="tpo_tara_pol"
+        name="custom_factor_tpo_tara_pol"
         value={formData.custom_factor_tpo_tara_pol}
         onChange={handleChange}
         margin="normal"
@@ -578,7 +578,7 @@ const CreateProcessing = () => {
       /> 
             <TextField
         label="Коэффициент ПО Хим Реаг"
-        name="po_him_reag"
+        name="custom_factor_him_reag"
         value={formData.custom_factor_him_reag}
         onChange={handleChange}
         margin="normal"
