@@ -8,6 +8,7 @@ import axios from 'axios';
 import config from '@/config';
 import './style.css'
 import 'bootstrap/dist/css/bootstrap.css';
+import Image from 'next/image';
 
 interface Company {
   id: number;
@@ -67,7 +68,7 @@ const CompanyProfile = () => {
       <div className="col-lg-4">
         <div className="card mb-4">
           <div className="card-body text-center">
-            <img
+            <Image
               src="https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
               alt="avatar"
               className="rounded-circle img-fluid"

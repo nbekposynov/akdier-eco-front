@@ -19,7 +19,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems } from './listItems';
-import { useRouter } from 'next/router';
 import { useEffect, ReactNode  } from 'react';
 import LogoutButton from './logout';
 import PrivateCompanyRoute from './private';

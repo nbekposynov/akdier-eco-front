@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Box } from '@mui/material';
 import Container from '@mui/material/Container';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import Button from '@mui/material/Button';
 
 import config from '@/config';
