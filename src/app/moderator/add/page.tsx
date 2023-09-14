@@ -47,23 +47,24 @@ const CreateProcessing = () => {
     po_bur_shl: '',
     po_obr: '',
     po_him_reag: '',
+    custom_factor_tbo_food: '',
+    custom_factor_tbo_plastic: '',
+    custom_factor_tbo_bumaga: '',
+    custom_factor_tbo_derevo: '',
+    custom_factor_tbo_meshki: '',
+    custom_factor_tbo_neutil: '',
+    custom_factor_tpo_cement: '',
+    custom_factor_tpo_krishki: '',
+    custom_factor_tpo_shini: '',
+    custom_factor_tbo_vetoshfi: '',
+    custom_factor_tpo_akkum: '',
+    custom_factor_tpo_tara_met: '',
     custom_factor_tpo_tara_pol: '',
     custom_factor_neftesh: '',
     custom_factor_zam_gr: '',
     custom_factor_bsh: '',
     custom_factor_obr: '',
     custom_factor_him_reag: '',
-    custom_factor_tpo_tara_met: '',
-    custom_factor_tpo_akkum: '',
-    custom_factor_tbo_vetoshfi: '',
-    custom_factor_tpo_shini: '',
-    custom_factor_tpo_krishki: '',
-    custom_factor_tpo_cement: '',
-    custom_factor_tbo_meshki: '',
-    custom_factor_tbo_derevo: '',
-    custom_factor_tbo_bumaga: '',
-    custom_factor_tbo_plastic: '',
-    custom_factor_tbo_food: ''
   });
   interface Company {
     id: number;
@@ -209,11 +210,20 @@ const CreateProcessing = () => {
         
         margin="normal"
         variant="outlined"
-          style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
-      /> 
+      />
+      <TextField
+        label="Коэффициент ТБО Пищевые"
+        name="custom_factor_tbo_food"
+        value={formData.custom_factor_tbo_food}
+        onChange={handleChange}
+        
+        margin="normal"
+        variant="outlined"
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+      />
       </div>
-
 
       <div> <TextField
         label="ТБО Пластик"
@@ -222,11 +232,22 @@ const CreateProcessing = () => {
         onChange={handleChange}
         margin="normal"
         variant="outlined"
-          style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
-      /> </div>
+      /> 
+      <TextField
+        label="Коэффициент ТБО Пластик"
+        name="custom_factor_tbo_plastic"
+        value={formData.custom_factor_tbo_plastic}
+        onChange={handleChange}
+        margin="normal"
+        variant="outlined"
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
-
+      /> 
+  
+      </div>
+      
       <div> <TextField
         label="ТБО Бумага"
         name="tbo_bumaga"
@@ -234,9 +255,21 @@ const CreateProcessing = () => {
         onChange={handleChange}
         margin="normal"
         variant="outlined"
-          style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
-      /> </div>
+      /> 
+      <TextField
+        label="Коэффициент ТБО Бумага"
+        name="custom_factor_tbo_bumaga"
+        value={formData.custom_factor_tbo_bumaga}
+        onChange={handleChange}
+        margin="normal"
+        variant="outlined"
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+
+      /> 
+      
+      </div>
 
 
       <div> <TextField
@@ -246,9 +279,21 @@ const CreateProcessing = () => {
         onChange={handleChange}
         margin="normal"
         variant="outlined"
-          style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
-      /> </div>
+      /> 
+      <TextField
+        label="Коэффициент ТБО Дерево"
+        name="custom_factor_tbo_derevo"
+        value={formData.custom_factor_tbo_derevo}
+        onChange={handleChange}
+        margin="normal"
+        variant="outlined"
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+
+      />
+      
+      </div>
 
 
       <div> <TextField
@@ -258,9 +303,21 @@ const CreateProcessing = () => {
         onChange={handleChange}
         margin="normal"
         variant="outlined"
-          style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
-      /> </div>
+      /> 
+      <TextField
+        label="Коэффициент ТБО Мешки"
+        name="custom_factor_tbo_meshki"
+        value={formData.custom_factor_tbo_meshki}
+        onChange={handleChange}
+        margin="normal"
+        variant="outlined"
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+
+      /> 
+      
+      </div>
 
       <div> <TextField
         label="ТБО Метал"
@@ -271,7 +328,10 @@ const CreateProcessing = () => {
         variant="outlined"
           style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
-      /> </div>
+      /> 
+
+      
+      </div>
 
       <div> <TextField
         label="ТБО Неутиль"
@@ -280,9 +340,19 @@ const CreateProcessing = () => {
         onChange={handleChange}
         margin="normal"
         variant="outlined"
-          style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
-      /> </div>
+      /> 
+      <TextField
+        label="Коэффициент ТБО Неутиль"
+        name="custom_factor_tbo_neutil"
+        value={formData.custom_factor_tbo_neutil}
+        onChange={handleChange}
+        margin="normal"
+        variant="outlined"
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+
+      /></div>
 
       <div> <TextField
         label="БСВ"
@@ -302,7 +372,17 @@ const CreateProcessing = () => {
         onChange={handleChange}
         margin="normal"
         variant="outlined"
-          style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+
+      />
+      <TextField
+        label="КоэффициентТПО Цемент"
+        name="custom_factor_tpo_cement"
+        value={formData.custom_factor_tpo_cement}
+        onChange={handleChange}
+        margin="normal"
+        variant="outlined"
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
       /> </div>
 
@@ -335,9 +415,20 @@ const CreateProcessing = () => {
         onChange={handleChange}
         margin="normal"
         variant="outlined"
-          style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
-      /> </div>
+      /> 
+      <TextField
+        label="Коэффициент ТПО Крышки"
+        name="custom_factor_tpo_krishki"
+        value={formData.custom_factor_tpo_krishki}
+        onChange={handleChange}
+        margin="normal"
+        variant="outlined"
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+
+      /> 
+      </div>
 
       <div> <TextField
         label="ТПО Мешки"
