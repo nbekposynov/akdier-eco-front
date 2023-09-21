@@ -330,7 +330,7 @@ const CreateProcessing = () => {
         onChange={handleChange}
         margin="normal"
         variant="outlined"
-          style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
       /> 
             <TextField
