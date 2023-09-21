@@ -52,6 +52,7 @@ const CreateProcessing = () => {
     custom_factor_tbo_bumaga: '',
     custom_factor_tbo_derevo: '',
     custom_factor_tbo_meshki: '',
+    custom_factor_tbo_metal: '',
     custom_factor_tbo_neutil: '',
     custom_factor_tpo_cement: '',
     custom_factor_tpo_krishki: '',
@@ -113,13 +114,16 @@ const CreateProcessing = () => {
       });
       if (response.status === 201) {
         const data = response.data;
-        alert('Запись успешно добавлена!')
+        alert('Запись успешно добавлена!');
+      } else if (response.status === 400) {
+        // Handle specific 400 error here
+        alert('Ошибка: ТБО всего не совпадает с остальными полями ТБО.');
       } else {
-        // handle error
+        // Handle other status codes
       }
     } catch (error) {
-      // handle error
-      alert(error);
+      // Handle other errors
+      alert('Ошибка:' + error);
     }
   };
   return (
@@ -329,6 +333,16 @@ const CreateProcessing = () => {
           style={{ width: '700px' }} // Установите нужную ширину в пикселях или других подходящих единиц
 
       /> 
+            <TextField
+        label="Коэффициент ТБО Метал"
+        name="custom_factor_tbo_metal"
+        value={formData.custom_factor_tbo_metal}
+        onChange={handleChange}
+        margin="normal"
+        variant="outlined"
+          style={{ width: '350px' }} // Установите нужную ширину в пикселях или других подходящих единиц
+
+      />
 
       
       </div>
